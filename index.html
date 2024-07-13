@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Student Records</title>
+
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-image: url(img/5.png); 
+            background-size: cover;
+            background-position: center;
+            color: #0c0c0c;
+        }
+
+        header {
+            background-color: rgba(174, 7, 54, 0.751);
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: 70px;
+            font-weight: 5000;
+            text-align: center;
+            margin: 0;
+            color: #ffffff;
+            height: 80px;
+            padding: 12px;
+        }
+       
+        h1 {
+            text-align: center;
+        }
+        span {
+            color: rgb(218, 110, 16);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 5000;
+            color: rgb(12, 12, 12);
+        }
+        input[type="text"] {
+            width: 25%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #1690cd;
+            color: #000;
+        }
+        input:hover {
+            background-color: rgba(44, 220, 199, 0.8); 
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ea30be;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-weight: 1000;
+        }
+        button:hover {
+            background-color: #ee197c;
+            color: #000000;
+        }
+        #studentData {
+            margin-top: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: rgb(243, 243, 248);
+        }
+
+        th, td {
+            border: 1px solid #0d0d0e;
+            padding: 10px;
+            text-align:center;
+        }
+
+        th {
+            background-color: #7a09c1;
+            color: #f1e8e8;
+        }
+        .btnUpdate, .btnDelete {
+            cursor: pointer;
+            color: blue;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Function to fetch a specific student record
+            $("#btnGetStudent").click(function(){
+                var sid = $("#studentsid").val();
+                $.ajax({
+                    url: "getStudents.php?sid=" + sid,
+                    type: "GET",
+                    success: function(response){
+                        var student = JSON.parse(response); // Assuming the response is in JSON format
+                        var tableRow = "<tr>" +
+                                           "<td>" + student.sid + "</td>" +
+                                           "<td>" + student.name + "</td>" +
+                                           "<td>" + student.age + "</td>" +
+                                           "<td>" + student.address + "</td>" +
+                                           "<td>" + student.cgpa + "</td>" +
+                                           "<td><i class='fas fa-edit btnUpdate' data-sid='" + student.sid + "'></i></td>" +
+                                           "<td><i class='fas fa-trash-alt btnDelete' data-sid='" + student.sid + "'></i></td>" +
+                                       "</tr>";
+                        $("#studentDataTable tbody").html(tableRow);
+                    }
+                });
+            });
+
+            // Function to fetch all student records
+            $("#btnGetAllStudents").click(function(){
+                $.ajax({
+                    url: "getallstudent.php",
+                    type: "GET",
+                    success: function(response){
+                        var students = JSON.parse(response); // Assuming the response is in JSON format
+                        var tableRows = "";
+                        $.each(students, function(index, student){
+                            tableRows += "<tr>" +
+                                              "<td>" + student.sid + "</td>" +
+                                              "<td>" + student.name + "</td>" +
+                                              "<td>" + student.age + "</td>" +
+                                              "<td>" + student.address + "</td>" +
+                                              "<td>" + student.cgpa + "</td>" +
+                                              "<td><i class='fas fa-edit btnUpdate' data-sid='" + student.sid + "'></i></td>" +
+                                              "<td><i class='fas fa-trash-alt btnDelete' data-sid='" + student.sid + "'></i></td>" +
+                                          "</tr>";
+                        });
+                        $("#studentDataTable tbody").html(tableRows);
+                    }
+                });
+            });
+
+           // Event listener for dynamically generated update buttons
+$("#studentDataTable").on("click", ".btnUpdate", function(){
+    var studentId = $(this).data("sid");
+    $.ajax({
+        url: "getStudent.php?sid=" + studentId,
+        type: "GET",
+        success: function(response){
+            var student = JSON.parse(response);
+            $("#updateModal").css("display", "block");
+            $("#updateModal #sid").val(student.sid);
+            $("#updateModal #name").val(student.name);
+            $("#updateModal #age").val(student.age);
+            $("#updateModal #address").val(student.address);
+            $("#updateModal #cgpa").val(student.cgpa);
+        }
+    });
+});
+
+
+            // Event listener for dynamically generated delete buttons
+            $("#studentDataTable").on("click", ".btnDelete", function(){
+                var studentId = $(this).data("sid");
+                if(confirm("Are you sure you want to delete this student's data?")) {
+                    // Perform AJAX request to delete the student record
+                    $.ajax({
+                        url: "deleteStudent.php",
+                        type: "POST",
+                        data: { sid: studentId },
+                        success: function(response){
+                            alert("Student record deleted successfully!");
+                            // Reload the student data after deletion
+                            $("#btnGetAllStudents").click();
+                        }
+                    });
+                }
+            });
+
+            $(".close").click(function(){
+                $("#updateModal").css("display", "none");
+            });
+
+            // Close the update modal when the user clicks anywhere outside of the modal
+            $(window).click(function(event) {
+                if (event.target == $("#updateModal")[0]) {
+                    $("#updateModal").css("display", "none");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        - SLIIT CITY UNI -
+    </header>
+    
+    <h1>Student <span>Records</span></h1>
+    <div>
+        <label for="studentsid">Enter Student ID:</label>
+        <input type="text" id="studentsid">
+        <button id="btnGetStudent">Get Student</button>
+    </div>
+    <br>
+    <button id="btnGetAllStudents">Get All Students</button>
+    <br>
+    <div id="studentData">
+        <table id="studentDataTable" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Address</th>
+                    <th>CGPA</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+    <!-- Update Modal -->
+    <div id="updateModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Student Details</h2>
+            <form id="updateForm" action="updateStudent.php" method="POST">
+                <label for="sid">Student ID:</label>
+                <input type="text" id="sid" name="sid" readonly><br><br>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"><br><br>
+                <label for="age">Age:</label>
+                <input type="text" id="age" name="age"><br><br>
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address"><br><br>
+                <label for="cgpa">CGPA:</label>
+                <input type="text" id="cgpa" name="cgpa"><br><br>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

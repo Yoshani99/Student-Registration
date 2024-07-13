@@ -1,0 +1,72 @@
+{
+    "1": {
+        "sid": 2,
+        "name": "Janidu Prabasha",
+        "age": 21,
+        "address": "456 Elm St",
+        "cgpa": 3.8
+    },
+    "2": {
+        "sid": 3,
+        "name": "Kasun Chamara",
+        "age": 20,
+        "address": "232 Elm St",
+        "cgpa": 3.7
+    },
+    "3": {
+        "sid": 4,
+        "name": "Chathurika Ramindi",
+        "age": 25,
+        "address": "312 Main St",
+        "cgpa": 2.8
+    },
+    "4": {
+        "sid": 5,
+        "name": "Tharushi Abenayaka",
+        "age": 24,
+        "address": "402 Main St",
+        "cgpa": 2.3
+    },
+    "5": {
+        "sid": 6,
+        "name": "Uthpala Sadamini",
+        "age": 25,
+        "address": "63 Main St",
+        "cgpa": 3.5
+    },
+    "6": {
+        "sid": 7,
+        "name": "Erandi Wijethunga",
+        "age": 24,
+        "address": "6 Main St",
+        "cgpa": 2.4
+    },
+    "7": {
+        "sid": 8,
+        "name": "Nisala Irosh",
+        "age": 25,
+        "address": "34 Main St",
+        "cgpa": 2.9
+    },
+    "8": {
+        "sid": 9,
+        "name": "Supun Sathsara",
+        "age": 25,
+        "address": "89 Main St",
+        "cgpa": 3.1
+    },
+    "9": {
+        "sid": 10,
+        "name": "Isuri Nimesha",
+        "age": 23,
+        "address": "75 Main St",
+        "cgpa": 3.3
+    },
+    "11": {
+        "sid": 12,
+        "name": "Umidu Achintha",
+        "age": 22,
+        "address": "12 Main St",
+        "cgpa": 3.4
+    }
+}
